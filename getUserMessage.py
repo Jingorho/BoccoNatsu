@@ -8,7 +8,7 @@ import random
 
 def getUserMessage():
 
-
+  userMessage = ""
   detectWeatherKey = "の天気は"
   weatherNum = 1 # default 0,1,2
 
@@ -41,7 +41,7 @@ def getUserMessage():
             weatherNum = 2
 
           # デモ用
-          weatherNum = random(3)
+          weatherNum = random.randrange(3)
 
         # else:
           # print("> Weather does not be found.")
@@ -65,7 +65,8 @@ def getUserMessage():
 
     else:
       print("> User message does not found.")
-      return
+      return userMessage, weatherNum
+
 
     print( '> Got {' + str(userMessage) + '} from bocco server.')
 

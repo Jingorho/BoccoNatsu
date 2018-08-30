@@ -8,14 +8,17 @@ import socket
 import time
 from time import sleep
 
-# import detectUploadPictures as detectUpPict
 import sendBoccoMessage as sendBoccoMsg
+import trySendBoccoPicture as trySendBoccoPict
+
 import getBoccoMessage as getBoccoMsg
 
 import detectUserMessage as detectUsrMsg
 import generatePicturebook as generatePb
 import sendGoogleDrive as sendGD
 import sendBoccoPicturebook as sendBoccoPb
+
+import getTheme as getTm
 
 
 class Main:
@@ -29,7 +32,9 @@ class Main:
     dataFromClient = ""
 
     WaitingUserMessage = False
+    manageScene = 0
 
+    theme = ""
 
 
     while True:
@@ -39,17 +44,31 @@ class Main:
       # ユーザのメッセージを検知してアルバム生成してGoogleDriveにup
       #
       ##############################################################
-      if WaitingUserMessage is True:
+      if manageScene  is 2:
+      
         print("> Waiting user message ...")
-        if (detectUsrMsg.detectUserMessage()):
-          
+
+        # メッセージが無かったら
+        if detectUsrMsg.detectUserMessage() is 0:
+          print("###")
+
+        # # スタートトリガーワードを含むメッセージがあったら
+        # elif detectUsrMsg.detectUserMessage() is 1:
+        #   sendBoccoMsg.sendBoccoMessage(getBoccoMsg.getBoccoMessage(0pytho) )
+
+        # それ以外のメッセージがあったら
+        elif detectUsrMsg.detectUserMessage() is 2:
           generatePb.generatePicturebook(dataFromClient)
           sendGD.sendGoogleDrive(dataFromClient)
-          sendBoccoMsg.sendBoccoMessage(getBoccoMsg.getBoccoMessage(2) )
-          # sendBoccoMsg.sendBoccoMessage('GoogleDriveにアップロードしたよ')
-          sleep(3)
-          sendBoccoPb.sendBoccoPicturebook()
-          WaitingUserMessage = False
+          sendBoccoMsg.sendBoccoMessage( getBoccoMsg.getBoccoMessage(2) )
+          
+          # sendBoccoPicture()でToo Many Requestが頻発するので、
+          # Try-exceptで、Upするまで待つ処理.
+          trySendBoccoPict.trySendBoccoPicture()
+          
+
+          # WaitingUserMessage = False
+          manageScene = 0
 
         else:
           print('> User message does not found (or Bocco spoke).')
@@ -61,8 +80,8 @@ class Main:
       # Socket通信で写真up通知を受け取ってBoccoにメッセージ送信
       #
       ##############################################################
-      else:
-
+      elif manageScene is 1:
+      
         print('> Listening the notification of uploading pictures ...')
         s.listen(5)
 
@@ -75,7 +94,35 @@ class Main:
         # ファイル受信通知を受け取ったら
         # 「今日は何があったの？」
         sendBoccoMsg.sendBoccoMessage( getBoccoMsg.getBoccoMessage(1) )
-        WaitingUserMessage = True
+        # WaitingUserMessage = True
+        manageScene = 2
+
+
+
+      elif manageScene is 0:
+        print('> Waiting user TRIGGER massage ...')
+        # メッセージが無かったら
+        if detectUsrMsg.detectUserMessage() is 0:
+          print("###")
+
+        # スタートトリガーワードを含むメッセージがあったら
+        elif detectUsrMsg.detectUserMessage() is 1:
+          sendBoccoMsg.sendBoccoMessage(getBoccoMsg.getBoccoMessage(0) )
+          
+        # # それ以外のメッセージがあったら
+        # elif detectUsrMsg.detectUserMessage() is 2:
+        #   generatePb.generatePicturebook(dataFromClient)
+        #   sendGD.sendGoogleDrive(dataFromClient)
+        #   sendBoccoMsg.sendBoccoMessage(getBoccoMsg.getBoccoMessage(2) )
+        #   # sendBoccoMsg.sendBoccoMessage('GoogleDriveにアップロードしたよ')
+        #   sleep(3)
+        #   sendBoccoPb.sendBoccoPicturebook()
+        #   WaitingUserMessage = False
+          manageScene = 1
+
+        else:
+          print('> User message does not found (or Bocco spoke).')
+
 
 
       sleep(10)

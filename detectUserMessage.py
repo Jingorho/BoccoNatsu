@@ -7,18 +7,18 @@ import json
 
 def detectUserMessage():
 
+  startTriggerWord = "おはよう"
+  detectedMessageType = 0 # 0は発見できていない、1は最初のお題をスタートするトリガ、2は写真のupを検知するトリガ
+
   #子供のUUIDを指定するならここに入力. 今の所は「BOCCOのUUID以外だったら」にしておく
   # designatedUserUUID = "33e739e3-b6f0-4ab8-9824-3fde9f6e7827"
   boccoUUID = "33e739e3-b6f0-4ab8-9824-3fde9f6e7827"
-
 
   # curlのオプションで指定している情報
   params = (
     ('access_token', '103148b9423b6967c6e7971c091ea7ed657ede19d3d3a75ca6ae824ffb4cffb5'),
   )
-
   response = requests.get('https://api.bocco.me/alpha/rooms/09540d0d-ee72-455c-a248-accbe77ccac6/messages', params=params)
-  #いくつかのメッセージを読み込む
   messages = response.json() #list
 
   # 最新のメッセージを読み込む
@@ -34,17 +34,27 @@ def detectUserMessage():
     # もしくは
     # BOCCO以外のユーザだったら
     if latestUserMsg["user"]["uuid"] != boccoUUID:
-      print('> Detected user message.')
-      return True
+
+      ###############################
+      # スタートのトリガーのワード「BOCCOおはよう」を含んでいたら
+      ###############################
+      if latestUserMsg["text"].find(startTriggerWord) > -1:
+        detectedMessageType = 1
+        print('> Detected user message including ' + startTriggerWord + '.')
       
-    else: 
-      False
+
+      ###############################
+      # それ以外のメッセージだったら
+      ###############################
+      else:
+        detectedMessageType = 2
+        print('> Detected user message.')
+    
+
+    return detectedMessageType
     # if BOCCO以外のユーザだったら
 
-var plane = CreatePlane.plane
-という行は、'CreatePlane'というスクリプトの中の'plane'という変数を参照しようとしてるのに、'CreatePlane'というスクリプトの中の'plane'という変数がないよー
-と言っているエラーになります。
-ぶっちゃけCrossPointCheck.csの参照元が不明なので、
+
 
 
 
@@ -52,7 +62,7 @@ var plane = CreatePlane.plane
     print(messages)
     print(len(messages))
     print(type(messages))
-    return False
+    return detectedMessageType
   # listじゃなくてdictで帰ってくる時のための例外処理
 
 

@@ -2,19 +2,21 @@
 # 2018.08.22
 
 from PIL import Image, ImageDraw, ImageFont #pipでインストールできないときはpipをupgradeする(現在動いてるのはv18.0)
-from PIL.ImageChops import difference
 import getUserMessage as getUsrMsg
 import getPictures as getPict
 import getMetaData as getMtDt
+import getTheme as getTm
+import generateNextPicturebook as generateNextPb
 import sendGoogleDrive as sendGD
 import random
 
 
 def generatePicturebook(pictureDirName):
 # def generatePicturebook():
-	# pictureDirName = '1535433958'
+# 	pictureDirName = '1535433958'
 	if pictureDirName is None:
 		return
+
 	else:
 		print("> GeneratePicturebook() has started.")
 
@@ -31,6 +33,15 @@ def generatePicturebook(pictureDirName):
 		getMsgResult = getUsrMsg.getUserMessage()
 		userMessage = getMsgResult[0]
 		weatherNum = getMsgResult[1]
+		try:
+			userMessage = getMsgResult[0]
+			# userMessage = "メロスは激怒した。必ず、かの邪智暴虐じゃちぼうぎゃくの王を除かなければならぬと決意した。メロスには政治がわからぬ。メロスは、村の牧人である。笛を吹き、羊と遊んで暮して来た。けれども邪悪に対しては、人一倍に敏感であった。きょう未明メロスは村を出発し、野を越え山越え、十里はなれた此このシラクスの市にやって来た。メロスには父も、母も無い。女房も無い。十六の、内気な妹と二人暮しだ。この妹は、村の或る律気な一牧人を、近々、花婿はなむことして迎える事になっていた。結婚式も間近かなのである。メロスは、それゆえ、花嫁の衣裳やら祝宴の御馳走やらを買いに、はるばる市にやって来たのだ。先ず、その品々を買い集め、それから都の大路をぶらぶら歩いた。メロスには竹馬の友があった。セリヌンティウスである。今は此のシラクスの市で、石工をしている。その友を、これから訪ねてみるつもりなのだ。久しく逢わなかったのだから、訪ねて行くのが楽しみである。歩いているうちにメロスは、まちの様子を怪しく思った。ひっそりしている。もう既に日も落ちて、まちの暗いのは当りまえだが、けれども、なんだか、夜のせいばかりでは無く、市全体が、やけに寂しい。のんきなメロスも、だんだん不安になって来た。路で逢った若い衆をつかまえて、何かあったのか、二年まえに此の市に来たときは、夜でも皆が歌をうたって、まちは賑やかであった筈はずだが、と質問した。若い衆は、首を振って答えなかった。しばらく歩いて老爺ろうやに逢い、こんどはもっと、語勢を強くして質問した。老爺は答えなかった。メロスは両手で老爺のからだをゆすぶって質問を重ねた。老爺は、あたりをはばかる低"
+			weatherNum = getMsgResult[1]
+		except Exception as e:
+			# return
+			print(e)
+			userMessage = 'メッセージなし'
+			weatherNum = 1
 
 
 		# 背景画像の読み込み
@@ -42,8 +53,8 @@ def generatePicturebook(pictureDirName):
 		margin_top = 66
 		margin_left = 140
 		margin_toText = 70
-		newLineCharCount = 14
-		lineInterval = 70
+		newLineCharCount = 15
+		lineInterval = 72
 
 		pictWith = 280
 		pictHeight = 210
@@ -118,12 +129,31 @@ def generatePicturebook(pictureDirName):
 							   boccoBgX, boccoBgY, 
 							   font, 2, 1)
 
+		# theme書く
+		font_theme = ImageFont.truetype('/home/bocco/.local/share/fonts/ヒラギノ丸ゴ ProN W4.ttc', 20)
+		theme = getTm.getTheme()
+		themeStr = '今日のお題「'+ theme +'」'
+		themeStrWidth, themeStrHeight = font_theme.getsize(themeStr)
+		print(str(themeStrWidth) + "----")
+		draw = ImageDraw.Draw(bg_edit)
+		draw.text(
+			( (margin_left + margin_interval + pictWith*2) - themeStrWidth, 30), 
+			themeStr, 
+			fill=(0, 0, 0), 
+			font=font_theme)
 		
 
 		# Drawインスタンスを生成
 		# userMessage = u'あいうえおアイウエオあいうえおアイウエオあいうえおアイウエオあいうえお'
 		userMessageRows = [userMessage[i : i+newLineCharCount] for i in range(0, len(userMessage), newLineCharCount)]
-		
+		print(userMessageRows)
+
+		if len(userMessageRows) > 6:
+			userMessageRows_latter = userMessageRows[7:]
+			userMessageRows = userMessageRows[:6]
+			print(userMessageRows_latter)
+			generateNextPb.generateNextPicturebook(userMessageRows_latter, 2)
+
 		
 
 		for i in range( len(userMessageRows) ):		
@@ -134,10 +164,9 @@ def generatePicturebook(pictureDirName):
 
 
 
-		bg_edit.save('Picturebook/picturebook.png', quality=95)
-		print("> Generated picturebook successfully.")
-
-		# sendGD.sendGoogleDrive()
+		if (userMessage is not None) and (theme is not None):
+			bg_edit.save('Picturebook/picturebook.png', quality=95)
+			print("> Generated picturebook successfully.")
 
 
 

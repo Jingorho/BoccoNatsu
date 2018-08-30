@@ -3,6 +3,7 @@
 
 import requests
 import uuid
+import os
 import bocco
 
 ######
@@ -22,8 +23,22 @@ room_uuid = uuid.UUID('09540d0d-ee72-455c-a248-accbe77ccac6')
 
 def sendBoccoPicturebook():
 
-  api.post_image_message( 
-    room_uuid, '/root/Picturebook/picturebook.png')
+  # 送信
+  api.post_image_message(room_uuid, '/root/Picturebook/picturebook.png')
+
+
+  # n枚目もあったら送信
+  # if len(os.listdir('/root/Picturebook/')) > 2:
+  #   for i in len(os.listdir('/root/Picturebook/')): # ファイルのリストを取得
+  #     if os.path.exists('/root/Picturebook/picturebook' + str(i) + '.png'):
+  #       api.post_image_message(room_uuid, '/root/Picturebook/picturebook' + str(i) + '.png')
+  #       os.remove('/root/Picturebook/picturebook' + str(i) + '.png')
+  #       print("picturebook" + str(i) + ".png is uploaded")
+
+  #     else:
+  #       print("picturebook_n.png is not found")
+
+
   print('> Send picturebook to chatroom.')
 
 

@@ -2,10 +2,10 @@
 # encoding: utf-8
 
 # アクセストークンの取得
-curl -i "https://api.bocco.me/alpha/sessions" \
-    -d "apikey=4QiLD9c9Qr8IDJE7ALqX6wpAaKPUNGrf69xfTMCO2a9T9MRiHw4BpA5fHjG6KbOE" \
-    -d "email=miyanishi56@gmail.com" \
-    -d "password=3910yuka"
+# curl -i "https://api.bocco.me/alpha/sessions" \
+#     -d "apikey=4QiLD9c9Qr8IDJE7ALqX6wpAaKPUNGrf69xfTMCO2a9T9MRiHw4BpA5fHjG6KbOE" \
+#     -d "email=miyanishi56@gmail.com" \
+#     -d "password=3910yuka"
 
 # 取得された情報
 # {"access_token":"103148b9423b6967c6e7971c091ea7ed657ede19d3d3a75ca6ae824ffb4cffb5",

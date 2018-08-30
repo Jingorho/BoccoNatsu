@@ -29,9 +29,6 @@ def sendBoccoMessage(msg):
     response = requests.post('https://api.bocco.me/alpha/rooms/09540d0d-ee72-455c-a248-accbe77ccac6/messages', headers=headers, data=data)
 
     print('> Send {' + msg + '} to bocco.')
-    # print(isPicturesUploaded + ' was returned!!')
-
-
-
+    
 if __name__ == "__main__":
     sendBoccoMessage()

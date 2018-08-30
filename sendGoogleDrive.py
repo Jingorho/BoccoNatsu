@@ -9,6 +9,8 @@ from pydrive.drive import GoogleDrive
 import sendBoccoMessage as sendBcMsg
 import getPictures as getPict
 
+import os
+
 
 def sendGoogleDrive(pictureDirName):
 	# 参照: https://qiita.com/akabei/items/f25e4f79dd7c2f754f0e
@@ -32,6 +34,21 @@ def sendGoogleDrive(pictureDirName):
 		})
 	f_picturebook.SetContentFile('Picturebook/picturebook.png')
 	f_picturebook.Upload()
+
+
+
+	# 図鑑のupload 2枚目
+	# 2枚目もあったら送信
+	if os.path.exists('/root/Picturebook/picturebook2.png'):
+		f_picturebook_2 = drive.CreateFile(
+			{
+			'title': picturebookTitle+'2.png', 
+			'mimeType': 'image/jpeg'
+			})
+		f_picturebook_2.SetContentFile('Picturebook/picturebook2.png')
+		f_picturebook_2.Upload()
+
+
 
 
 	# 写真のupload
