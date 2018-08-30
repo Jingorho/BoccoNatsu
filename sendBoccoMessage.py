@@ -5,12 +5,10 @@ import requests
 import uuid
 import getBoccoMessage as getMsg
 
-
 def sendBoccoMessage(msg):
     
     if msg is None:
         msg = getMsg.getBoccoMessage(2)
-
 
     # curlのオプションで指定している情報
     headers = {

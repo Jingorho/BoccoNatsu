@@ -28,19 +28,21 @@ def sendBoccoPicturebook():
 
 
   # n枚目もあったら送信
-  # if len(os.listdir('/root/Picturebook/')) > 2:
-  #   for i in len(os.listdir('/root/Picturebook/')): # ファイルのリストを取得
-  #     if os.path.exists('/root/Picturebook/picturebook' + str(i) + '.png'):
-  #       api.post_image_message(room_uuid, '/root/Picturebook/picturebook' + str(i) + '.png')
-  #       os.remove('/root/Picturebook/picturebook' + str(i) + '.png')
-  #       print("picturebook" + str(i) + ".png is uploaded")
+  if len(os.listdir('/root/Picturebook/')) > 1:
+    # ファイルの数ぶんだけ回す
+    for i in range(len(os.listdir('/root/Picturebook/'))):
+      # i枚目があったら
+      if os.path.exists('/root/Picturebook/picturebook' + str(i) + '.png'):
+        api.post_image_message(room_uuid, '/root/Picturebook/picturebook' + str(i) + '.png') # 投稿
+        os.remove('/root/Picturebook/picturebook' + str(i) + '.png') # 次回投稿時に重複して検知するので削除しておく
+        print("> {picturebook" + str(i) + ".png} is uploaded to chatroom.")
 
-  #     else:
-  #       print("picturebook_n.png is not found")
+      else:
+        print("> {picturebook" + str(i) + ".png} is not found")
 
-
-  print('> Send picturebook to chatroom.')
+  print('> Send all picturebook to chatroom.')
 
 
 if __name__ == "__main__":
   sendBoccoPicturebook()
+  

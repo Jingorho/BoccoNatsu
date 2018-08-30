@@ -9,14 +9,16 @@ def trySendBoccoPicture():
     
     while True:
       try:
-        print("> Try sendBoccoPicturebook() successfully.")
+        print("> Run sendBoccoPicturebook() successfully.")
         sendBoccoPb.sendBoccoPicturebook()
         break
+        # 成功したらその時点でwhileループを出る
 
       except Exception as e:
-        print("> Exception has occured ... so sleep until allowed too many request.")
+        print("> Exception has occurred ... so sleep and repeat running sendBoccoPicturebook() until exception will be allowed.")
         print(e)
         sleep(8)
+        # Exceptionになったら、8秒待って再度ループで実行
 
 
 if __name__ == "__main__":

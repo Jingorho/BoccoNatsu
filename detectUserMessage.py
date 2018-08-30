@@ -4,13 +4,12 @@
 import requests
 import json
 
-
 def detectUserMessage():
 
   startTriggerWord = "おはよう"
   detectedMessageType = 0 # 0は発見できていない、1は最初のお題をスタートするトリガ、2は写真のupを検知するトリガ
 
-  #子供のUUIDを指定するならここに入力. 今の所は「BOCCOのUUID以外だったら」にしておく
+  # 子供のUUIDを指定するならここに入力. 今の所は「BOCCOのUUID以外だったら」にしておく
   # designatedUserUUID = "33e739e3-b6f0-4ab8-9824-3fde9f6e7827"
   boccoUUID = "33e739e3-b6f0-4ab8-9824-3fde9f6e7827"
 
@@ -30,13 +29,13 @@ def detectUserMessage():
     latestUserMsg = messages[len(messages)-1] #dict
 
     # 指定されたユーザ(子供)だったら
-    #if latestUserMsg["user"]["uuid"] == designatedUserUUID:
+    # if latestUserMsg["user"]["uuid"] == designatedUserUUID:
     # もしくは
     # BOCCO以外のユーザだったら
     if latestUserMsg["user"]["uuid"] != boccoUUID:
 
       ###############################
-      # スタートのトリガーのワード「BOCCOおはよう」を含んでいたら
+      # スタートのトリガーのワード「おはよう」を含んでいたら
       ###############################
       if latestUserMsg["text"].find(startTriggerWord) > -1:
         detectedMessageType = 1

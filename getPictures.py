@@ -15,7 +15,7 @@ def getPictures(pictureDirName):
     pictDir = str(os.getcwd()) + '/pictures/' + pictureDirName + '/*.png' #カレントディレクトリからパス取得
     pictures = glob.glob(pictDir)
     
-    for pict in pictures:# ファイルの数だけループ
+    for pict in pictures: # ファイルの数だけループ
       count = count + 1
   
   else:
@@ -28,4 +28,4 @@ def getPictures(pictureDirName):
 
 
 if __name__ == "__main__":
-    getPictures()
+  getPictures()

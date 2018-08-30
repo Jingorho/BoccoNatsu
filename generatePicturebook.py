@@ -2,13 +2,15 @@
 # 2018.08.22
 
 from PIL import Image, ImageDraw, ImageFont #pipでインストールできないときはpipをupgradeする(現在動いてるのはv18.0)
+import random
+import datetime
+
 import getUserMessage as getUsrMsg
 import getPictures as getPict
-import getMetaData as getMtDt
+# import getMetaData as getMtDt
 import getTheme as getTm
 import generateNextPicturebook as generateNextPb
 import sendGoogleDrive as sendGD
-import random
 
 
 def generatePicturebook(pictureDirName):
@@ -29,7 +31,7 @@ def generatePicturebook(pictureDirName):
 		pictPath.sort()
 		print(str(pictPath))
 		
-		# テキストの読み込み
+		# メッセージとメタデータの読み込み
 		getMsgResult = getUsrMsg.getUserMessage()
 		userMessage = getMsgResult[0]
 		weatherNum = getMsgResult[1]
@@ -43,6 +45,10 @@ def generatePicturebook(pictureDirName):
 			userMessage = 'メッセージなし'
 			weatherNum = 1
 
+		dateStr = datetime.datetime.today().strftime("%-m月%-d日") # ハイフンは0埋めしないためのやつ
+		weatherIcon = Image.open('resource/weatherIcon/' + str(weatherNum) + '.png')
+		
+		
 
 		# 背景画像の読み込み
 		bg = Image.open("resource/notebook.png")
@@ -89,9 +95,7 @@ def generatePicturebook(pictureDirName):
 			elif i == 2:
 				bg_edit.paste(pict, (margin_left, margin_top + pict.height + margin_interval), mask)
 			
-			# print(str(i) + " : " + pict)
-
-		
+			
 
 		boccoBg = Image.open('resource/boccoBg.png')
 		mask = boccoBg.split()[3] #透過としてRGBのみ抽出
@@ -108,18 +112,10 @@ def generatePicturebook(pictureDirName):
 		###############################
 		
 		# フォントの設定(フォントファイルのパスと文字の大きさ)
-		# font = ImageFont.truetype('resource/font/Arial.ttc', 40)
 		font = ImageFont.truetype('/home/bocco/.local/share/fonts/ヒラギノ丸ゴ ProN W4.ttc', 40)
 		
-		metaData = getMtDt.getMetaData()
-		dateStr = metaData[0] #.decode("utf-8")
-		# weatherStr = metaData[1] #.decode("utf-8")
-		print(str(weatherNum))
-		weatherIcon = Image.open('resource/weatherIcon/' + str(weatherNum) + '.png')
-		
-
 		# dateStr書く
-		drawCenteringTextToImg(0, bg_edit, dateStr, 
+		drawCenteringTextToImg(0, bg_edit, dateStr,
 							   boccoBg.width, boccoBg.height+60, 
 							   boccoBgX, boccoBgY, 
 							   font, 2, 0)
@@ -143,19 +139,20 @@ def generatePicturebook(pictureDirName):
 			font=font_theme)
 		
 
-		# Drawインスタンスを生成
-		# userMessage = u'あいうえおアイウエオあいうえおアイウエオあいうえおアイウエオあいうえお'
+		# newLineCharCount(改行する文字数)で文章を分割してlistに格納
 		userMessageRows = [userMessage[i : i+newLineCharCount] for i in range(0, len(userMessage), newLineCharCount)]
-		print(userMessageRows)
-
+		
+		# 文章長かったら(6行しか格納できない)分割して2枚目以降作成
 		if len(userMessageRows) > 6:
-			userMessageRows_latter = userMessageRows[7:]
-			userMessageRows = userMessageRows[:6]
+			userMessageRows_latter = userMessageRows[7:] # 7行目以降は別の変数に格納
+			userMessageRows = userMessageRows[:6] # 後半を切り取り
 			print(userMessageRows_latter)
+			# 2枚目以降作成(第二引数は便宜上. 「2」枚目以降の2)
 			generateNextPb.generateNextPicturebook(userMessageRows_latter, 2)
-
+		print(userMessageRows)
 		
 
+		# 文章を1行ずつ書いていく
 		for i in range( len(userMessageRows) ):		
 			draw_userMessage = ImageDraw.Draw(bg_edit)
 			draw_userMessage.text(
@@ -163,10 +160,12 @@ def generatePicturebook(pictureDirName):
 				userMessageRows[i], fill=(0, 0, 0), font=font)
 
 
-
+		# 空白だったら
 		if (userMessage is not None) and (theme is not None):
 			bg_edit.save('Picturebook/picturebook.png', quality=95)
 			print("> Generated picturebook successfully.")
+		else:
+			print("> Some resources may be empty.")
 
 
 

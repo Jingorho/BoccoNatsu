@@ -3,7 +3,6 @@
 
 import random
 import os
-
 import setTheme as setTm
 
 def getBoccoMessage(typeNum):
@@ -13,7 +12,7 @@ def getBoccoMessage(typeNum):
 
   if os.path.exists(path):
     with open(path) as f:
-      # ファイルからテキストを取得して改行コードでlistに格納
+      # ファイルからテキストを取得して改行コードで分割してlistに格納
       fileContents = f.read()
       messages = fileContents.split("\n")
       # ランダム番目のテキストを抽出
@@ -31,10 +30,11 @@ def getBoccoMessage(typeNum):
           # ランダム番目のテキストを抽出
           theme = themes[random.randrange(len(themes))]
           setTm.setTheme(theme)
-
+        # テキストの中の'theme'という文字を変数themeで置き換える
         boccoMessage = boccoMessage.replace('theme', theme)
 
 
+      # 2(終了報告)だったら'GoogleDriveに〜'を付記する
       if typeNum is 2:
         boccoMessage = boccoMessage + 'GoogleDriveにアップロードしたよ'
 

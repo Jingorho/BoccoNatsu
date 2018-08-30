@@ -23,13 +23,14 @@ def getUserMessage():
     messages = response.json() #list
     
     #最新のメッセージを読み込む
-    # 何回かリクエストを送ってるとたまにlistじゃなくてdictで帰ってくる時がある。
+    # 何回かリクエストを送ってるとたまにlistじゃなくてdictで帰ってくる時がある(中身はエラーメッセージ?未確認)
     # その例外処理を無理やり書いておく
     if(isinstance(messages, list)):
-      # detectUserMesssage以外に、天気をここでついでに取得しておく
+
+      # usrMessageのリクエストを送ったとき、userMesssage以外にも、
+      # ついでに天気をここで取得しておく
       for i in range(len(messages)):
         msgTxt = messages[i]["text"]
-        # print(msgTxt)
         if msgTxt.find(detectWeatherKey) > -1:
           msgTxt = msgTxt[msgTxt.find(detectWeatherKey):]
           
@@ -51,14 +52,13 @@ def getUserMessage():
 
 
 
-
       print("...")
-      latestUserMsg = messages[len(messages)-1] #dictlatestUserMsg = messages[len(messages)-1] #dict
+      latestUserMsg = messages[len(messages)-1] # dictlatestUserMsg = messages[len(messages)-1] #dict
       
       # 指定されたユーザだったら
       # if latestUserMsg["user"]["uuid"] == designatedUserUUID:
-      userMessage = latestUserMsg["text"] + '。' #最後に句点入れておく
-      userMessage = userMessage.replace(' ', '。') #スペースがあったら句点に置換
+      userMessage = latestUserMsg["text"] + '。' # 最後に句点入れておく
+      userMessage = userMessage.replace(' ', '。') # スペースがあったら句点に置換
       
       return userMessage, weatherNum
 

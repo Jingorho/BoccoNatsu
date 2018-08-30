@@ -1,15 +1,12 @@
 # coding: utf-8
 # 2018.08.24
 
-
 import datetime
+import os
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
-
 import sendBoccoMessage as sendBcMsg
 import getPictures as getPict
-
-import os
 
 
 def sendGoogleDrive(pictureDirName):
@@ -68,7 +65,6 @@ def sendGoogleDrive(pictureDirName):
 	for i in range(pictCount):
 
 		# pictName = dataからのファイルネーム
-
 		f_picture = drive.CreateFile(
 			{
 			'title': fileTitle+'_'+str(i)+'.png', 
@@ -81,7 +77,6 @@ def sendGoogleDrive(pictureDirName):
 
 
 	# uploadの報告
-	# sendBcMsg.sendBoccoMessage('GoogleDriveにアップロードしたよ') #発言内容を指定して実行
 	print('> Uploaded successfully picturebook and pictures to GoogleDrive.')
 
 
