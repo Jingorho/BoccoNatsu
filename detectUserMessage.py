@@ -3,8 +3,10 @@
 
 import requests
 import json
+import getUserInformation as getUserInfo
 
 def detectUserMessage():
+  userInfo = getUserInfo.getUserInformation() # access_token, room_uuidが帰ってくる
 
   startTriggerWord = "おはよう"
   detectedMessageType = 0 # 0は発見できていない、1は最初のお題をスタートするトリガ、2は写真のupを検知するトリガ
@@ -15,9 +17,9 @@ def detectUserMessage():
 
   # curlのオプションで指定している情報
   params = (
-    ('access_token', '103148b9423b6967c6e7971c091ea7ed657ede19d3d3a75ca6ae824ffb4cffb5'),
+    ('access_token', userInfo[0]),
   )
-  response = requests.get('https://api.bocco.me/alpha/rooms/09540d0d-ee72-455c-a248-accbe77ccac6/messages', params=params)
+  response = requests.get('https://api.bocco.me/alpha/rooms/'+userInfo[1]+'/messages', params=params)
   messages = response.json() #list
 
   # 最新のメッセージを読み込む

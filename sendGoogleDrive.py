@@ -12,6 +12,8 @@ import getPictures as getPict
 def sendGoogleDrive(pictureDirName):
 	# 参照: https://qiita.com/akabei/items/f25e4f79dd7c2f754f0e
 
+	pbPath = '/root/Picturebook/'
+
 	dateTitle = datetime.datetime.today().strftime("20%y年%m月%d日")
 	fileTitle = dateTitle # + 'の写真'
 	folderTitle = dateTitle + 'の写真'
@@ -22,33 +24,46 @@ def sendGoogleDrive(pictureDirName):
 	drive = GoogleDrive(gauth)
 
 
-
+	###############################
 	# 図鑑のupload
+	###############################
+	# 1枚目はデフォルトで必ず送信
 	f_picturebook = drive.CreateFile(
 		{
 		'title': picturebookTitle+'.png', 
 		'mimeType': 'image/jpeg'
 		})
-	f_picturebook.SetContentFile('Picturebook/picturebook.png')
+	f_picturebook.SetContentFile(pbPath+'picturebook.png')
 	f_picturebook.Upload()
 
 
+	# 図鑑のupload n枚目もあったら送信
+	if len(os.listdir(pbPath)) > 1:
+		# ファイルの数ぶんだけ回す
+		for i in range(len(os.listdir(pbPath))):
+			# i枚目があったら
+			if os.path.exists(pbPath + 'picturebook' + str(i) + '.png'):
+				f_picturebook = drive.CreateFile(
+				{
+				'title': picturebookTitle+'.png', 
+				'mimeType': 'image/jpeg'
+				})
+				f_picturebook.SetContentFile(pbPath + 'picturebook' + str(i) + '.png')
+				f_picturebook.Upload()
+	 			print("> {picturebook" + str(i) + ".png} is uploaded to GoogleDrive.")
 
-	# 図鑑のupload 2枚目
-	# 2枚目もあったら送信
-	if os.path.exists('/root/Picturebook/picturebook2.png'):
-		f_picturebook_2 = drive.CreateFile(
-			{
-			'title': picturebookTitle+'2.png', 
-			'mimeType': 'image/jpeg'
-			})
-		f_picturebook_2.SetContentFile('Picturebook/picturebook2.png')
-		f_picturebook_2.Upload()
+			else:
+				print("> {picturebook" + str(i) + ".png} is not found")
+
+		print('> Send all picturebook to GoogleDrive.')
+	
 
 
 
 
+	###############################
 	# 写真のupload
+	###############################
 	folder = drive.CreateFile(
 		{
 		'title': folderTitle, 

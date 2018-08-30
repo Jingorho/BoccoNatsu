@@ -4,8 +4,10 @@
 import requests
 import uuid
 import getBoccoMessage as getMsg
+import getUserInformation as getUserInfo
 
 def sendBoccoMessage(msg):
+    userInfo = getUserInfo.getUserInformation() # access_token, room_uuidが帰ってくる
     
     if msg is None:
         msg = getMsg.getBoccoMessage(2)
@@ -17,7 +19,7 @@ def sendBoccoMessage(msg):
 
     # curlのオプションで指定している情報
     data = [
-      ('access_token', '103148b9423b6967c6e7971c091ea7ed657ede19d3d3a75ca6ae824ffb4cffb5'),
+      ('access_token', userInfo[0]),
       ('unique_id', uuid.uuid4()), #コマンドラインだと`uuidgen`があるけどPyhton内ではないので
       ('media', 'text'),
       ('text', msg),
