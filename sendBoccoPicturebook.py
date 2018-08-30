@@ -22,19 +22,20 @@ api = bocco.api.Client('535f77f09d7f6da5da9ab11885302d7885720d7b437efe06cf3f4b09
 room_uuid = uuid.UUID('09540d0d-ee72-455c-a248-accbe77ccac6')
 
 def sendBoccoPicturebook():
-
+  pbPath = '/root/Picturebook/'
+  
   # 送信
-  api.post_image_message(room_uuid, '/root/Picturebook/picturebook.png')
+  api.post_image_message(room_uuid, pbPath+'picturebook.png')
 
 
   # n枚目もあったら送信
-  if len(os.listdir('/root/Picturebook/')) > 1:
+  if len(os.listdir(pbPath)) > 1:
     # ファイルの数ぶんだけ回す
-    for i in range(len(os.listdir('/root/Picturebook/'))):
+    for i in range(len(os.listdir(pbPath))):
       # i枚目があったら
-      if os.path.exists('/root/Picturebook/picturebook' + str(i) + '.png'):
-        api.post_image_message(room_uuid, '/root/Picturebook/picturebook' + str(i) + '.png') # 投稿
-        os.remove('/root/Picturebook/picturebook' + str(i) + '.png') # 次回投稿時に重複して検知するので削除しておく
+      if os.path.exists(pbPath+'picturebook' + str(i) + '.png'):
+        api.post_image_message(room_uuid, pbPath+'picturebook' + str(i) + '.png') # 投稿
+        os.remove(pbPath+'picturebook' + str(i) + '.png') # 次回投稿時に重複して検知するので削除しておく
         print("> {picturebook" + str(i) + ".png} is uploaded to chatroom.")
 
       else:
@@ -45,4 +46,4 @@ def sendBoccoPicturebook():
 
 if __name__ == "__main__":
   sendBoccoPicturebook()
-  
+
