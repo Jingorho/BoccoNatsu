@@ -6,7 +6,7 @@ import json
 import uuid
 
 
-def setUserInformation():
+def getUserInformation():
   accessToken = ""
   roomUuid = ""
 
@@ -21,4 +21,4 @@ def setUserInformation():
 
 
 if __name__ == "__main__":
-  setUserInformation()
+  getUserInformation()

@@ -4,13 +4,16 @@
 import requests
 import json
 import uuid
+from browser import document
 
 
 def setUserInformation():
+
+  # TODO: これらを引数でブラウザから取得できるようにする
   api_key = '4QiLD9c9Qr8IDJE7ALqX6wpAaKPUNGrf69xfTMCO2a9T9MRiHw4BpA5fHjG6KbOE' #宮西のAPI KEY
   email= 'miyanishi56@gmail.com' # 宮西のemail
   password = '3910yuka' #宮西のパスワード
-
+  
 
   ###############################
   # API KEYからACCESS TOKEN取得
