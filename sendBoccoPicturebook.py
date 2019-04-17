@@ -37,9 +37,9 @@ def sendBoccoPicturebook():
     # ファイルの数ぶんだけ回す
     for i in range(len(os.listdir(pbPath))):
       # i枚目があったら
-      if os.path.exists(pbPath+'picturebook' + str(i) + '.png'):
-        api.post_image_message(room_uuid, pbPath+'picturebook' + str(i) + '.png') # 投稿
-        os.remove(pbPath+'picturebook' + str(i) + '.png') # 次回投稿時に重複して検知するので削除しておく
+      if os.path.exists(pbPath + 'picturebook' + str(i) + '.png'):
+        api.post_image_message(room_uuid, pbPath + 'picturebook' + str(i) + '.png') # 投稿
+        os.remove(pbPath + 'picturebook' + str(i) + '.png') # 次回投稿時に重複して検知するので削除しておく
         print("> {picturebook" + str(i) + ".png} is uploaded to chatroom.")
 
       else:

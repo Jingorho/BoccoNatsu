@@ -8,12 +8,15 @@ import getUserInformation as getUserInfo
 def detectUserMessage():
   userInfo = getUserInfo.getUserInformation() # access_token, room_uuidが帰ってくる
 
-  startTriggerWord = "おはよう"
+  startTrigger = "おはよう"
+  setThemeTrigger1 = "テーマは"
+  setThemeTrigger2 = "お題は"
   detectedMessageType = 0 # 0は発見できていない、1は最初のお題をスタートするトリガ、2は写真のupを検知するトリガ
 
   # 子供のUUIDを指定するならここに入力. 今の所は「BOCCOのUUID以外だったら」にしておく
   # designatedUserUUID = "33e739e3-b6f0-4ab8-9824-3fde9f6e7827"
   boccoUUID = "33e739e3-b6f0-4ab8-9824-3fde9f6e7827"
+  # boccoUUID = ""
 
   # curlのオプションで指定している情報
   params = (
@@ -21,6 +24,8 @@ def detectUserMessage():
   )
   response = requests.get('https://api.bocco.me/alpha/rooms/'+userInfo[1]+'/messages', params=params)
   messages = response.json() #list
+
+
 
   # 最新のメッセージを読み込む
   # 何回かリクエストを送ってるとたまにlistじゃなくてdictで帰ってくる時がある。
@@ -36,21 +41,34 @@ def detectUserMessage():
     # BOCCO以外のユーザだったら
     if latestUserMsg["user"]["uuid"] != boccoUUID:
 
+
       ###############################
-      # スタートのトリガーのワード「おはよう」を含んでいたら
+      # テーマ設定のトリガーのワード「テーマは」「お題は」を含んでいたら
       ###############################
-      if latestUserMsg["text"].find(startTriggerWord) > -1:
-        detectedMessageType = 1
-        print('> Detected user message including ' + startTriggerWord + '.')
+      if (latestUserMsg["text"].find(setThemeTrigger1) > -1) or (latestUserMsg["text"].find(setThemeTrigger2) > -1):
+        detectedMessageType = 2
+        print('> Detected user message including ' + setThemeTrigger1 + ' or ' + setThemeTrigger2 + '.')
+
+
+
+      ###############################
+      # 開始トリガーのワード「おはよう」を含んでいたら
+      ###############################
+      elif latestUserMsg["text"].find(startTrigger) > -1:
+        detectedMessageType = 3
+        print('> Detected user message including ' + startTrigger + '.')
       
+
 
       ###############################
       # それ以外のメッセージだったら
       ###############################
       else:
-        detectedMessageType = 2
-        print('> Detected user message.')
+      # elif latestUserMsg["text"].find('とりました') > -1: #for debug
+        detectedMessageType = 1
+        print('> Detected user message does not include any trigger word.')
     
+
 
     return detectedMessageType
     # if BOCCO以外のユーザだったら

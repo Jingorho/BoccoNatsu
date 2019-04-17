@@ -41,7 +41,7 @@ def generateNextPicturebook(userMessageRows, cnt):
 			userMessageRows[i], fill=(0, 0, 0), font=font)
 
 	bg_edit.save('Picturebook/picturebook' + str(cnt) + '.png', quality=95)
-
+	print("> Generated picturebook" + str(cnt) + ".png successfully.")
 
 
 if __name__ == "__main__":

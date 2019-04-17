@@ -4,9 +4,15 @@
 import random
 import os
 import setTheme as setTm
+import getTheme as getTm
 
 def getBoccoMessage(typeNum):
-  # typeNum: 1は"今日は何を取ったの", 2は"へーそうなんだ"
+  # typeNum: 
+  # 0: Userメッセージなし(upload検知)->今日はなにを取ったの?
+  # 1: トリガー無し->へーそうなんだ
+  # 2: 今日のテーマを設定したよ
+  # 3: 今日のテーマはXXだよ
+
   
   path = 'data/boccoMsgDB_' + str(typeNum) + '.txt'
 
@@ -19,28 +25,55 @@ def getBoccoMessage(typeNum):
       boccoMessage = messages[random.randrange(len(messages))]
 
 
+      ##############################################################
       # それぞれのメッセージ固有の処理
-      if typeNum is 0:
+      ##############################################################
 
-        # 0(お題表示)だったら追加ファイルからお題をランダムにとって指定
-        with open('data/boccoMsgDB_theme.txt') as f:
-          # ファイルからテキストを取得して改行コードでlistに格納
-          fileContents = f.read()
-          themes = fileContents.split("\n")
-          # ランダム番目のテキストを抽出
-          theme = themes[random.randrange(len(themes))]
-          setTm.setTheme(theme)
-        # テキストの中の'theme'という文字を変数themeで置き換える
-        boccoMessage = boccoMessage.replace('theme', theme)
+      
+      ###############################
+      # 0: メッセージ無し(写真のupload検知のみ)
+      # 今日はなにを取ったの？
+      ###############################
+      # if typeNum is 0:
+      #   # なにもしない
 
-
-      # 2(終了報告)だったら'GoogleDriveに〜'を付記する
-      if typeNum is 2:
+      
+      ###############################
+      # 1: メッセージありだがトリガー無し
+      # へーそうなんだ。GoogleDriveに〜
+      ###############################
+      if typeNum is 1:
         boccoMessage = boccoMessage + 'GoogleDriveにアップロードしたよ'
 
 
-      print( '> {' + str(boccoMessage) + '} was returned.')
 
+      ###############################
+      # 2: お題設定トリガー「テーマは」あり
+      # テーマをthemeに設定したよ!
+      ###############################
+      if typeNum is 2:
+        # テキストの中の'theme'という文字を変数themeで置き換える
+        theme = getTm.getTheme()
+        boccoMessage = boccoMessage.replace('theme', theme)
+        print("theme: " + theme)
+        print("boccoMessage: " + boccoMessage)
+
+
+
+      ###############################
+      # 3: 開始トリガー「おはよう」あり
+      # 今日のお題はthemeだよ!
+      ###############################
+      if typeNum is 3:
+          
+        # テキストの中の'theme'という文字を変数themeで置き換える
+        theme = getTm.getTheme()
+        setTm.setTheme(theme)
+        boccoMessage = boccoMessage.replace('theme', theme)
+
+
+
+      print( '> {' + str(boccoMessage) + '} was returned.')
       return boccoMessage
   
   else:
